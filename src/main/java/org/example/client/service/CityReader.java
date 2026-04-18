@@ -1,15 +1,16 @@
-package org.example.common.service;
+package org.example.client.service;
 
-import org.example.Application;
-import org.example.data.*;
-import org.example.validate.CoordinatesValidator;
-import org.example.validate.InputValidator;
+
+
+
+import org.example.common.data.*;
+import org.example.server.validate.CoordinatesValidator;
+import org.example.server.validate.InputValidator;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Scanner;
 
-import static org.example.validate.InputValidator.*;
 
 /**
  * Сервис для ввода и валидации данных города в интерактивном и скриптовом режимах.

@@ -1,4 +1,4 @@
-package org.example.common.service;
+package org.example.client.service;
 
 import java.util.Scanner;
 

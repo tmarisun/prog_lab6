@@ -1,7 +1,6 @@
 package org.example.server.service;
 
 import lombok.Getter;
-import org.example.server.Application;
 import org.example.common.commands.Command;
 
 import java.util.HashMap;
