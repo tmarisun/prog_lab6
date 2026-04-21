@@ -22,11 +22,13 @@ public class ServerConnectionAcceptor {
         this.processor = processor;
     }
 
+
     public void start() throws Exception {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
             System.out.println("Server started on port " + port);
-            System.out.println("Server console command available: save");
+            System.out.println("Server console command available: save, exit");
+
 
             while (true) {
                 processServerConsoleInput(consoleReader);
@@ -36,7 +38,6 @@ public class ServerConnectionAcceptor {
                     responseSender.send(socket.getOutputStream(), response);
                 }
                 catch (EOFException | SocketException e) {
-                        // Клиент просто закрыл программу. Это норма, не ошибка.
                         System.out.println("Client disconnected.");
                     }
                 catch (SocketTimeoutException  ignored) {
@@ -55,6 +56,7 @@ public class ServerConnectionAcceptor {
             while (consoleReader.ready()) {
                 String line = consoleReader.readLine();
                 CommandResponse response = processor.processServerConsoleCommand(line);
+                System.out.println("ekfjwefjwjekfhkjwehfkewn");
                 if (response != null) {
                     System.out.println("[SERVER] " + response.getMessage());
                 }

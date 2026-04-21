@@ -1,5 +1,6 @@
 package org.example.client;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import org.example.net.protocol.CommandRequest;
 import org.example.net.protocol.CommandResponse;
 
@@ -18,9 +19,10 @@ public class ClientNetworkChannel {
     private static final long CONNECT_TIMEOUT_MS = 0;
     private static final long IO_TIMEOUT_MS = 0;
 
-    public ClientNetworkChannel(String host, int port) {
-        this.host = host;
-        this.port = port;
+    public ClientNetworkChannel() {
+        Dotenv dotenv = Dotenv.configure().load();
+        this.host = dotenv.get("SERVER_HOST", "localhost");
+        this.port = Integer.parseInt(dotenv.get("SERVER_PORT", "5555"));
     }
 
     public CommandResponse send(CommandRequest request) {

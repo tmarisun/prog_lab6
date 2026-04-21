@@ -1,6 +1,7 @@
 package org.example.client;
 
 import lombok.Getter;
+import org.example.client.cmd.*;
 import org.example.data.City;
 import org.example.data.StandardOfLiving;
 import org.example.net.protocol.CommandRequest;
@@ -8,11 +9,71 @@ import org.example.net.protocol.CommandType;
 import org.example.service.CityReader;
 import org.example.service.JsonFileInputReader;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Getter
 public class ClientCommandParser {
+
     private String lastError;
+    private final Map<String, ClientCommand> commands = new HashMap<>();
+
+    public ClientCommandParser() {
+        registerCommands();
+    }
+
+    private void registerCommands() {
+        commands.put("help", new SimpleCommand(CommandType.HELP));
+        commands.put("info", new SimpleCommand(CommandType.INFO));
+        commands.put("show", new SimpleCommand(CommandType.SHOW));
+        commands.put("clear", new SimpleCommand(CommandType.CLEAR));
+        commands.put("sort", new SimpleCommand(CommandType.SORT));
+        commands.put("exit", new SimpleCommand(CommandType.EXIT));
+        commands.put("print_field_ascending_standard_of_living",
+                new SimpleCommand(CommandType.PRINT_FIELD_ASCENDING_STANDARD_OF_LIVING));
+
+        commands.put("save", (arg, req) -> {
+            throw new IllegalArgumentException("Command 'save' is server-only");
+        });
+
+        commands.put("remove_by_id", new RemoveByIdCommand());
+        commands.put("count_less_than_standard_of_living", new CountLessThanCommand());
+        commands.put("filter_by_governor", new FilterByGovernorCommand());
+        commands.put("add", new AddCommand());
+        commands.put("add_if_max", new AddIfMaxCommand());
+        commands.put("insert_at", new InsertAtCommand());
+        commands.put("update", new UpdateCommand());
+    }
 
     public CommandRequest parse(String line) {
+        lastError = null;
+
+        if (line == null || line.trim().isEmpty()) {
+            lastError = "Empty command";
+            return null;
+        }
+
+        String[] parts = line.trim().split("\\s+", 2);
+        String cmdName = parts[0].toLowerCase();
+        String arg = parts.length > 1 ? parts[1] : null;
+
+        ClientCommand command = commands.get(cmdName);
+
+        if (command == null) {
+            lastError = "Unknown command: " + cmdName;
+            return null;
+        }
+
+        CommandRequest req = new CommandRequest();
+        try {
+            command.execute(arg, req);
+            return req;
+        } catch (Exception e) {
+            lastError = e.getMessage();
+            return null;
+        }
+    }
+    /*public CommandRequest parse(String line) {
         lastError = null;
         String[] parts = line.split("\\s+", 2);
         if (parts.length == 0 || parts[0].isEmpty()) {
@@ -127,10 +188,10 @@ public class ClientCommandParser {
             lastError = e.getMessage();
             return null;
         }
-        return req;
-    }
+        return req;*/
 
-    private City readCityForCommand(String filePath) {
+
+   /* private City readCityForCommand(String filePath) {
         try {
             if (filePath != null && filePath.length() > 0) {
                 return new JsonFileInputReader(filePath).readCity();
@@ -139,6 +200,5 @@ public class ClientCommandParser {
         } catch (Exception e) {
             return null;
         }
-    }
+    }*/
 }
-

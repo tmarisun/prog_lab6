@@ -6,13 +6,68 @@ import org.example.data.StandardOfLiving;
 import org.example.net.protocol.CommandRequest;
 import org.example.net.protocol.CommandResponse;
 import org.example.net.protocol.CommandType;
+import org.example.server.cmdd.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ServerCommandProcessor {
     private final ServerCollectionService service;
+    private final Map<CommandType, ServerCommandHandler> handlers = new HashMap<>();
 
     public ServerCommandProcessor(ServerCollectionService service) {
+        this.service = service;
+        registerHandlers();
+    }
+
+    private void registerHandlers() {
+        handlers.put(CommandType.HELP,
+                new SimpleServerCommand(CommandType.HELP, s -> HelpFormatter.serverHelpMessage()));
+
+        handlers.put(CommandType.INFO,
+                new SimpleServerCommand(CommandType.INFO, ServerCollectionService::info));
+
+        handlers.put(CommandType.CLEAR,
+                new SimpleServerCommand(CommandType.CLEAR, s -> { s.clear(); return "Collection cleared"; }));
+
+        handlers.put(CommandType.SORT,
+                new SimpleServerCommand(CommandType.SORT, s -> { s.sortNatural(); return "Sorted"; }));
+
+        handlers.put(CommandType.ADD, new AddCommand());
+        handlers.put(CommandType.ADD_IF_MAX, new AddIfMaxCommand());
+        handlers.put(CommandType.UPDATE, new UpdateCommand());
+        handlers.put(CommandType.INSERT_AT, new InsertAtCommand());
+        handlers.put(CommandType.REMOVE_BY_ID, new RemoveByIdCommand());
+
+        handlers.put(CommandType.SHOW, new ShowCommand());
+        handlers.put(CommandType.FILTER_BY_GOVERNOR, new FilterByGovernorCommand());
+        handlers.put(CommandType.COUNT_LESS_THAN_STANDARD_OF_LIVING, new CountLessThanCommand());
+        handlers.put(CommandType.PRINT_FIELD_ASCENDING_STANDARD_OF_LIVING, new PrintFieldAscendingCommand());
+
+        handlers.put(CommandType.EXIT, (s, r) -> CommandResponse.ok("Client closed"));
+        handlers.put(CommandType.SERVER_SAVE, (s, r) -> CommandResponse.fail("Use console for save"));
+    }
+
+    public CommandResponse process(CommandRequest req) {
+        try {
+            CommandType type = req.getType();
+            if (type == null) {
+                return CommandResponse.fail("Empty command type");
+            }
+
+            ServerCommandHandler handler = handlers.get(type);
+            if (handler == null) {
+                return CommandResponse.fail("Unsupported command: " + type);
+            }
+
+            return handler.execute(service, req);
+
+        } catch (Exception e) {
+            return CommandResponse.fail("Server internal error: " + e.getMessage());
+        }
+    }
+    /*public ServerCommandProcessor(ServerCollectionService service) {
         this.service = service;
     }
 
@@ -112,7 +167,7 @@ public class ServerCommandProcessor {
         } catch (Exception e) {
             return CommandResponse.fail("Server error: " + e.getMessage());
         }
-    }
+    }*/
 
     public CommandResponse processServerConsoleCommand(String line) {
         if (line == null || line.length() == 0) {
@@ -133,4 +188,3 @@ public class ServerCommandProcessor {
         }
     }
 }
-

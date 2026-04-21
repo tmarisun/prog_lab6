@@ -11,13 +11,11 @@ import java.util.Scanner;
 public class ClientMain {
 
     public static void main(String[] args) throws Exception {
-        String host =  "localhost";
-        int port = 5555;
 
         Scanner scanner = new Scanner(System.in);
         CityReader.setScanner(scanner);
 
-        ClientNetworkChannel network = new ClientNetworkChannel(host, port);
+        ClientNetworkChannel network = new ClientNetworkChannel();
         ClientCommandParser parser = new ClientCommandParser();
 
         System.out.println("Client started. Enter command:");
@@ -49,12 +47,10 @@ public class ClientMain {
 
     private static void printResponse(CommandResponse resp) {
         System.out.println();
-        //System.out.println(RESPONSE_SEPARATOR);
         System.out.println(resp.getMessage());
         for (City city : resp.getCities()) {
             System.out.println(city);
         }
-       // System.out.println(RESPONSE_SEPARATOR);
         System.out.println();
     }
 }

@@ -1,7 +1,10 @@
 package org.example.server;
 
+import lombok.Getter;
+import org.example.Application;
 import org.example.data.City;
 import org.example.data.StandardOfLiving;
+import org.example.net.protocol.CommandResponse;
 import org.example.service.JsonFileLoader;
 import org.example.service.JsonFileSaver;
 
@@ -14,7 +17,8 @@ import java.util.Stack;
 public class ServerCollectionService {
     private final String fileName;
     private final Stack<City> cities;
-
+    @Getter
+    public boolean isRunning;
     public ServerCollectionService(String fileName) throws IOException {
         this.fileName = fileName;
         this.cities = JsonFileLoader.loadCollection(fileName);
@@ -28,7 +32,24 @@ public class ServerCollectionService {
         return "Type: Stack, size: " + cities.size();
     }
 
-    public List<City> getSortedByName() {
+    public void show(){
+        if (Application.getCityStack().isEmpty()) {
+            System.out.println("Collection is empty.");
+            return;
+        }
+        for (City city : Application.getCityStack()) {
+            System.out.println(city);
+        }
+    }
+
+    public void exit() throws IOException{
+        JsonFileSaver.saveCitiesToFile(cities, fileName);
+        isRunning = false;
+        System.out.println("[SERVER] Shutting down server and disconnecting all clients...");
+        //System.exit(0);
+    }
+
+     public List<City> getSortedByName() {
         List<City> sorted = new ArrayList<>(cities);
         sorted.sort((a, b) -> a.getName().compareToIgnoreCase(b.getName()));
         return sorted;
