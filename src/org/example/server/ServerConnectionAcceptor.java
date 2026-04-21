@@ -4,9 +4,11 @@ import org.example.net.protocol.CommandRequest;
 import org.example.net.protocol.CommandResponse;
 
 import java.io.BufferedReader;
+import java.io.EOFException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
 public class ServerConnectionAcceptor {
@@ -25,13 +27,22 @@ public class ServerConnectionAcceptor {
             BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
             System.out.println("Server started on port " + port);
             System.out.println("Server console command available: save");
+
             while (true) {
                 processServerConsoleInput(consoleReader);
                 try (Socket socket = serverSocket.accept()) {
                     CommandRequest request = requestReader.read(socket.getInputStream());
                     CommandResponse response = processor.process(request);
                     responseSender.send(socket.getOutputStream(), response);
-                } catch (SocketTimeoutException ignored) {}
+                }
+                catch (EOFException | SocketException e) {
+                        // Клиент просто закрыл программу. Это норма, не ошибка.
+                        System.out.println("Client disconnected.");
+                    }
+                catch (SocketTimeoutException  ignored) {
+                    System.out.println("Client disconnected.");
+                }
+
                 catch (Exception e) {
                     System.out.println("Request error: " + e.getMessage());
                 }

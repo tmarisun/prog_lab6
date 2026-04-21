@@ -35,7 +35,8 @@ public class ClientCommandParser {
                 case "show": req.setType(CommandType.SHOW); break;
                 case "clear": req.setType(CommandType.CLEAR); break;
                 case "sort": req.setType(CommandType.SORT); break;
-                case "exit": req.setType(CommandType.EXIT); break;
+                case "exit":
+                    req.setType(CommandType.EXIT); break;
                 case "save":
                     lastError = "Command 'save' is not available on client";
                     return null;
