@@ -13,7 +13,9 @@ import java.util.Stack;
 import java.util.TimeZone;
 
 /**
- * Сохранение коллекции в JSON-файл. Запись через
+ * Сохраняет коллекцию {@link City} в JSON-файл в кодировке UTF-8.
+ * Даты форматируются как {@code yyyy-MM-dd'T'HH:mm:ss}, birthday — {@code yyyy-MM-dd}.
+ * @see JsonFileLoader
  */
 public class JsonFileSaver {
 

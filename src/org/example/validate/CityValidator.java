@@ -1,7 +1,14 @@
 package org.example.validate;
 
 import org.example.data.City;
-import java.io.*;;
+import java.io.*;
+
+/**
+ * Валидирует объект {@link City}, делегируя проверки {@link InputValidator} и {@link CoordinatesValidator}.
+ * Выбрасывает {@link IllegalArgumentException} при нарушении контракта полей.
+ * @see InputValidator
+ * @see CoordinatesValidator
+ */
 
 public class CityValidator {
 
@@ -16,6 +23,5 @@ public class CityValidator {
 
         CoordinatesValidator.validateCoordinates(city.getCoordinates());
     }
-
 
 }

@@ -32,7 +32,7 @@ public class InsertAt implements Command {
         }
 
         try {
-            String[] tokens = args[1].trim().split("\\s+");
+            String[] tokens = args[1].split("\\s+");
             int index = Integer.parseInt(tokens[0]);
             Stack<City> stack = Application.getCityStack();
 

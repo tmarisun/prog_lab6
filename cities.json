@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "name": "StartCity",
+    "coordinates": { "x": 10.0, "y": 20.0 },
+    "creationDate": "2026-01-01T10:00:00",
+    "area": 100.0,
+    "population": 1000,
+    "metersAboveSeaLevel": 50,
+    "climate": "SUBARCTIC",
+    "government": "OLIGARCHY",
+    "standardOfLiving": "MEDIUM",
+    "governor": { "birthday": "2000-01-01" }
+  }
+]
+

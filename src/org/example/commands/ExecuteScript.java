@@ -38,7 +38,7 @@ public class ExecuteScript implements Command {
             return;
         }
 
-        String fileName = args[1].trim();
+        String fileName = args[1];
         File file = new File(fileName);
 
         if (!file.exists()) {
@@ -71,8 +71,8 @@ public class ExecuteScript implements Command {
             }
 
             while (fileScanner.hasNextLine()) {
-                String line = fileScanner.nextLine().trim();
-                if (line.isEmpty() || line.startsWith("#")) {
+                String line = fileScanner.nextLine();
+                if (line.length() == 0 || line.startsWith("#")) {
                     continue;
                 }
 

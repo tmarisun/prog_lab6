@@ -7,6 +7,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Утилитный класс для валидации полей {@link City} и связанных типов.
+ * Все методы статические, выбрасывают {@link IllegalArgumentException} при нарушении контракта.
+ * @see CityValidator
+ * @see CoordinatesValidator
+ */
+
 public class InputValidator {
 
     public static void validateUniqueIds(Collection<City> cities) throws IllegalArgumentException {
@@ -19,7 +26,7 @@ public class InputValidator {
     }
 
     // === Coordinate Constraints ===
-    private static final float MAX_X = 959f;
+    private static final float MAX_X = 959;
     private static final double MAX_Y = 613.0;
 
     // === Numeric Constraints ===
@@ -92,7 +99,6 @@ public class InputValidator {
     //------------------------------------------
 
 
-
     public static void validatePopulation(Integer population) throws IllegalArgumentException {
         if (population == null) {
             throw new IllegalArgumentException("Population cannot be empty");
@@ -122,48 +128,28 @@ public class InputValidator {
     //-----------------------------------------
 
 
-
     public static String validateName(String name) throws IllegalArgumentException {
-        if (name == null || name.trim().isEmpty()) {
+        if (name == null || name.length() == 0) {
             throw new IllegalArgumentException("Name cannot be empty");
         }
-        return name.trim();
-    }
-
-    //-----------------------------------------
-
-    public static java.util.Date validateCreationDate(String dateString) throws IllegalArgumentException {
-        if (dateString == null || dateString.trim().isEmpty()) {
-            throw new IllegalArgumentException("Creation date cannot be empty");
-        }
-
-        try {
-            java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-            format.setLenient(false);
-            return format.parse(dateString.trim());
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid date format. Expected: yyyy-MM-dd'T'HH:mm:ss");
-        }
+        return name;
     }
 
     //-----------------------
 
     public static java.util.Date validateBirthday(String dateString) throws IllegalArgumentException {
-        if (dateString == null || dateString.trim().isEmpty()) {
+        if (dateString == null || dateString.length() == 0) {
             throw new IllegalArgumentException("Birthday cannot be empty");
         }
 
-        String s = dateString.trim();
-        //@JsonFormat(pattern = "yyyy-MM-dd")
-        String[] patterns = {"yyyy-MM-dd"};
+        String s = dateString;
+        String[] patterns = {"yyyy-MM-dd", "yyyy-MM-dd'T'HH:mm:ss"};
         for (String pattern : patterns) {
             try {
                 java.text.SimpleDateFormat format = new java.text.SimpleDateFormat(pattern);
                 format.setLenient(false);
                 return format.parse(s);
-            } catch (Exception ignored) {
-                // try next pattern
-            }
+            } catch (Exception ignored) {}
         }
         throw new IllegalArgumentException("Invalid birthday format. Expected: yyyy-MM-dd or yyyy-MM-dd'T'HH:mm:ss");
     }
@@ -177,7 +163,7 @@ public class InputValidator {
             String fieldName,
             boolean required) throws IllegalArgumentException {
 
-        if (value == null || value.trim().isEmpty()) {
+        if (value == null || value.isEmpty()) {
             if (required) {
                 throw new IllegalArgumentException(fieldName + " cannot be empty");
             }
@@ -185,11 +171,9 @@ public class InputValidator {
         }
 
         try {
-            return Enum.valueOf(enumClass, value.trim().toUpperCase());
-        } catch (java.lang.IllegalArgumentException e) {
-            throw new IllegalArgumentException(
-                    "Invalid " + fieldName + ". Valid values: " + java.util.Arrays.toString(enumClass.getEnumConstants())
-            );
+            return Enum.valueOf(enumClass, value.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid " + fieldName + ". Valid values");
         }
     }
 
@@ -201,9 +185,6 @@ public class InputValidator {
             throw new IllegalArgumentException(fieldName + " cannot be null");
         }
     }
-
-
-
 
 
 }

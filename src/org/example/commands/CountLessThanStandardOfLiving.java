@@ -29,7 +29,7 @@ public class CountLessThanStandardOfLiving implements Command {
         }
 
         try {
-            StandardOfLiving x = StandardOfLiving.valueOf(args[1].trim().toUpperCase());
+            StandardOfLiving x = StandardOfLiving.valueOf(args[1].toUpperCase());
             Stack<City> stack = Application.getCityStack();
             int count = 0;
 

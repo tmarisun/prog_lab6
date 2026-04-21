@@ -35,7 +35,7 @@ public class Update implements Command {
         }
 
         try {
-            String[] tokens = args[1].trim().split("\\s+");
+            String[] tokens = args[1].split("\\s+");
             long id = Long.parseLong(tokens[0]);
             InputValidator.validateId(id);
 

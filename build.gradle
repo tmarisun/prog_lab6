@@ -5,6 +5,9 @@ plugins {
 
 group = 'org.example'
 version = '1.0-SNAPSHOT'
+tasks.withType(Javadoc) {
+    options.encoding = 'UTF-8'
+}
 
 repositories {
     mavenCentral()
@@ -32,8 +35,8 @@ sourceSets {
 dependencies {
     implementation 'org.json:json:20231013'
 
-    compileOnly 'org.projectlombok:lombok:1.18.32'
-    annotationProcessor 'org.projectlombok:lombok:1.18.32'
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
 
     testCompileOnly 'org.projectlombok:lombok:1.18.32'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
@@ -60,6 +63,23 @@ tasks.test {
 tasks.named('run') {
     args = ['cities.json']
     // Пробрасываем stdin Gradle-задаче run, чтобы Scanner(System.in) был интерактивным
+    standardInput = System.in
+}
+
+tasks.register('runServer', JavaExec) {
+    group = 'application'
+    description = 'Run TCP collection server'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'org.example.server.ServerMain'
+    standardInput = System.in
+}
+
+tasks.register('runClient', JavaExec) {
+    group = 'application'
+    description = 'Run TCP collection client'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'org.example.client.ClientMain'
+    // For cleaner interactive console: gradle -q --console=plain runClient --args="localhost 5555"
     standardInput = System.in
 }
 

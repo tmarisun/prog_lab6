@@ -1,6 +1,5 @@
 package org.example.service;
 
-import org.example.Application;
 import org.example.data.*;
 import java.io.*;
 import org.example.validate.CoordinatesValidator;
@@ -12,6 +11,12 @@ import java.util.Scanner;
 
 import static org.example.validate.InputValidator.*;
 
+/**
+ * Сервис для ввода и валидации данных города в интерактивном и скриптовом режимах.
+ * Автоматически генерирует {@code id} и {@code creationDate}, обрабатывает ошибки ввода.
+ * @see City
+ * @see InputValidator
+ */
 
 public class CityReader {
 
@@ -192,8 +197,8 @@ public class CityReader {
         // creationDate генерируется автоматически — локальное время системы в момент создания объекта
         city.setCreationDate(new Date());
 
-        long id = Application.getNextId();
-        city.setId(id);
+        // ID and creationDate are assigned on server side for network mode.
+        city.setId(0L);
 
         if(attempts == MAX_ATTEMPTS) {
             System.out.println("You've used a lot of input attempts, repeat after 10 minutes.");
@@ -212,20 +217,20 @@ public class CityReader {
             city.setName(InputValidator.validateName(nameLine));
 
             String xLine = nextLineRequired(scanner);
-            float x = InputValidator.validateX(Float.parseFloat(xLine.trim()));
+            float x = InputValidator.validateX(Float.parseFloat(xLine));
             String yLine = nextLineRequired(scanner);
-            double y = InputValidator.validateY(Double.parseDouble(yLine.trim()));
+            double y = InputValidator.validateY(Double.parseDouble(yLine));
             Coordinates coordinates = new Coordinates(x, y);
             CoordinatesValidator.validateCoordinates(coordinates);
             city.setCoordinates(coordinates);
 
             String areaLine = nextLineRequired(scanner);
-            double area = Double.parseDouble(areaLine.trim());
+            double area = Double.parseDouble(areaLine);
             InputValidator.validateArea(area);
             city.setArea(area);
 
             String popLine = nextLineRequired(scanner);
-            int population = Integer.parseInt(popLine.trim());
+            int population = Integer.parseInt(popLine);
             InputValidator.validatePopulation(population);
             city.setPopulation(population);
 
@@ -235,7 +240,7 @@ public class CityReader {
                     Climate.class, "climate", false));
 
             String seaLine = nextLineRequired(scanner);
-            city.setMetersAboveSeaLevel(Integer.parseInt(seaLine.trim()));
+            city.setMetersAboveSeaLevel(Integer.parseInt(seaLine));
 
             String govLine = nextLineRequired(scanner);
             city.setGovernment(InputValidator.validateEnum(
@@ -255,8 +260,8 @@ public class CityReader {
             city.setGovernor(governor);
 
             city.setCreationDate(new Date());
-            long id = Application.getNextId();
-            city.setId(id);
+            // ID is assigned on server side.
+            city.setId(0L);
             return city;
         } catch (NumberFormatException e) {
             System.err.println("Script parse error: " + e.getMessage());
@@ -275,7 +280,7 @@ public class CityReader {
     }
 
     private static boolean isYes(String line) {
-        String s = line.trim();
+        String s = line;
         return s.equalsIgnoreCase("y") || s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("да");
     }
 
@@ -287,64 +292,54 @@ public class CityReader {
 
     private static float readCoordinateX(Scanner scanner) throws IllegalArgumentException {
         System.out.print("  X: ");
-        if(scanner.hasNextFloat()){
-            return validateX(scanner.nextFloat());
-        }
-        else{
-            scanner.next();
+        String line = scanner.nextLine();
+        try {
+            return validateX(Float.parseFloat(line));
+        } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Type Error!");
         }
     }
 
     private static int readSeaLevel(Scanner scanner) throws IllegalArgumentException {
         System.out.print("Enter the height above sea level: ");
-
-        if(scanner.hasNextInt()){
-            int readSeaLevel = scanner.nextInt();
-            scanner.nextLine();
-            return  readSeaLevel;
-        }
-        else{
-            scanner.next();
+        String line = scanner.nextLine();
+        try {
+            return Integer.parseInt(line);
+        } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Type Error!");
         }
     }
 
     private static double readCoordinateY(Scanner scanner) throws IllegalArgumentException {
         System.out.print("  Y: ");
-        if(scanner.hasNextDouble()){
-            return validateY(scanner.nextDouble());
-
-        }
-        else{
-            scanner.next();
+        String line = scanner.nextLine();
+        try {
+            return validateY(Double.parseDouble(line));
+        } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Type Error!");
         }
     }
 
     private static Integer readIntPollution(Scanner scanner) throws IllegalArgumentException {
         System.out.print("Enter the city's population: ");
-        if(scanner.hasNextInt()){
-            Integer population = scanner.nextInt();
-            scanner.nextLine();
+        String line = scanner.nextLine();
+        try {
+            Integer population = Integer.parseInt(line);
             validatePopulation(population);
             return population;
-        }
-        else{
-            scanner.next();
+        } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Type Error!");
         }
     }
 
     private static double readDoubleArea(Scanner scanner) throws IllegalArgumentException {
-        System.out.println("Enter the area of the city: ");
-        if(scanner.hasNextDouble()){
-            double ar = scanner.nextDouble();
+        System.out.print("Enter the area of the city: ");
+        String line = scanner.nextLine();
+        try {
+            double ar = Double.parseDouble(line);
             InputValidator.validateArea(ar);
             return ar;
-        }
-        else{
-            scanner.next();
+        } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Type Error!");
         }
     }
@@ -352,7 +347,7 @@ public class CityReader {
     private static Climate readEnumClimate(Scanner scanner) throws IllegalArgumentException {
         System.out.println("Available values: " + Arrays.toString(Climate.values()));
         System.out.print("Select the climate (Enter to skip): ");
-        String climateInput = scanner.nextLine().trim();
+        String climateInput = scanner.nextLine();
 
         return InputValidator.validateEnum(
                 climateInput.isEmpty() ? null : climateInput,
@@ -365,7 +360,7 @@ public class CityReader {
     private static Government readEnumGovernment(Scanner scanner) throws IllegalArgumentException {
         System.out.println("Available values: " + Arrays.toString(Government.values()));
         System.out.println("Choose a form of government: ");
-        String govInput = scanner.nextLine().trim();
+        String govInput = scanner.nextLine();
 
         return InputValidator.validateEnum(
                 govInput,
@@ -378,7 +373,7 @@ public class CityReader {
     private static StandardOfLiving readEnumStandard(Scanner scanner) throws IllegalArgumentException {
         System.out.println("Available values: " + Arrays.toString(StandardOfLiving.values()));
         System.out.print("Select the standard of living (Enter to skip): ");
-        String input = scanner.nextLine().trim();
+        String input = scanner.nextLine();
 
         return InputValidator.validateEnum(
                 input.isEmpty() ? null : input,
@@ -391,14 +386,14 @@ public class CityReader {
 
     private static boolean readYesNo(Scanner scanner) {
         System.out.print("Add a governor? (y/n): ");
-        String input = scanner.nextLine().trim();
+        String input = scanner.nextLine();
         return input.equalsIgnoreCase("y")
                 || input.equalsIgnoreCase("yes");
     }
 
     private static Date readDate(Scanner scanner) throws IllegalArgumentException {
-        System.out.print("Enter your birthday (yyyy-MM-ddTHH:MM:SS): ");
-        return InputValidator.validateBirthday(scanner.nextLine().trim());
+        System.out.print("Enter your birthday (yyyy-MM-dd or yyyy-MM-dd'T'HH:mm:ss): ");
+        return InputValidator.validateBirthday(scanner.nextLine());
     }
 
 

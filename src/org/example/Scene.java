@@ -28,12 +28,12 @@ public class Scene {
             System.out.flush();
             String line;
             try {
-                line = CityReader.scanner.nextLine().trim();
+                line = CityReader.scanner.nextLine();
             } catch (NoSuchElementException e) {
                 System.out.println("\nInput stream was closed. Exiting program.");
                 break;
             }
-            if (line.isEmpty()) continue;
+            if (line.length() == 0) continue;
 
             String[] parts = line.split("\\s+", 2);
             manager.callCommand(parts);

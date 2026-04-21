@@ -1,0 +1,5 @@
+execute_script client_script_basic.txt
+add script_city.json
+show
+exit
+

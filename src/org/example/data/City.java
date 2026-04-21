@@ -3,7 +3,14 @@ package org.example.data;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import java.io.Serializable;
 
+/**
+ * Представляет город с фиксированным набором характеристик.
+ * Сравнивается по {@code id} (реализует {@link Comparable}), равенство определяется только по {@code id}.
+ * @see Coordinates
+ * @see Human
+ */
 
 @Setter
 @Getter
@@ -12,7 +19,7 @@ import lombok.*;
 @EqualsAndHashCode(of = "id")
 @ToString
 
-public class City implements Comparable<City>{
+public class City implements Comparable<City>, Serializable {
 
     private Long id;
     private String name;

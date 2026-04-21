@@ -11,7 +11,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Stack;
 
 /**
- * Загрузка коллекции городов из JSON-файла.
+ * Утилитный класс для загрузки коллекции {@link City} из JSON-файла.
+ * Читает файл в кодировке UTF-8, использует Jackson с поддержкой {@code java.time}.
+ * @see City
  */
 public class JsonFileLoader {
 

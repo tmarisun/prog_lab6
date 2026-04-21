@@ -7,6 +7,12 @@ import java.util.HashMap;
 import java.util.Map;
 import org.example.Application;
 
+/**
+ * Диспетчер команд: регистрирует доступные {@link Command} и выполняет их по имени.
+ * Обрабатывает неизвестные команды и ошибки выполнения без прерывания работы приложения.
+ * @see Command
+ * @see Application
+ */
 
 @Getter
 public class ManagerCommands {
