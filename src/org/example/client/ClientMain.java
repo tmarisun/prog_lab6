@@ -9,7 +9,6 @@ import org.example.service.CityReader;
 import java.util.Scanner;
 
 public class ClientMain {
-    private static final String RESPONSE_SEPARATOR = "--------------------------------------------------";
 
     public static void main(String[] args) throws Exception {
         String host =  "localhost";
@@ -50,12 +49,12 @@ public class ClientMain {
 
     private static void printResponse(CommandResponse resp) {
         System.out.println();
-        System.out.println(RESPONSE_SEPARATOR);
+        //System.out.println(RESPONSE_SEPARATOR);
         System.out.println(resp.getMessage());
         for (City city : resp.getCities()) {
             System.out.println(city);
         }
-        System.out.println(RESPONSE_SEPARATOR);
+       // System.out.println(RESPONSE_SEPARATOR);
         System.out.println();
     }
 }
