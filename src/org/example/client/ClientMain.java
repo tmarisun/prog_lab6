@@ -6,6 +6,7 @@ import org.example.net.protocol.CommandResponse;
 import org.example.net.protocol.CommandType;
 import org.example.service.CityReader;
 
+import javax.crypto.spec.PSource;
 import java.util.Scanner;
 
 public class ClientMain {
@@ -28,7 +29,10 @@ public class ClientMain {
             if (req == null) {
                 String parseError = parser.getLastError();
                 if (parseError == null || parseError.length() == 0) {
-                    System.out.println("Unknown command or invalid format");
+                    Check chek = new Check();
+                    System.out.println("efkjwefjwekf");
+                    String Answer = chek.checkInput(parseError);
+                    System.out.println(Answer);
                 } else {
                     System.out.println("Input error: " + parseError);
                 }

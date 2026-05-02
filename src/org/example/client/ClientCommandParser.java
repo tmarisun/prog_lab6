@@ -60,7 +60,8 @@ public class ClientCommandParser {
         ClientCommand command = commands.get(cmdName);
 
         if (command == null) {
-            lastError = "Unknown command: " + cmdName;
+            Check chek = new Check();
+            lastError = "Unknown command: " + chek.checkInput(cmdName);
             return null;
         }
 

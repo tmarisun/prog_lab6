@@ -23,30 +23,13 @@ public class ServerCollectionService {
         this.fileName = fileName;
         this.cities = JsonFileLoader.loadCollection(fileName);
     }
-
+    
     public void save() throws IOException {
         JsonFileSaver.saveCitiesToFile(cities, fileName);
     }
 
     public String info() {
         return "Type: Stack, size: " + cities.size();
-    }
-
-    public void show(){
-        if (Application.getCityStack().isEmpty()) {
-            System.out.println("Collection is empty.");
-            return;
-        }
-        for (City city : Application.getCityStack()) {
-            System.out.println(city);
-        }
-    }
-
-    public void exit() throws IOException{
-        JsonFileSaver.saveCitiesToFile(cities, fileName);
-        isRunning = false;
-        System.out.println("[SERVER] Shutting down server and disconnecting all clients...");
-        //System.exit(0);
     }
 
      public List<City> getSortedByName() {
