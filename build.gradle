@@ -86,3 +86,36 @@ tasks.register('runClient', JavaExec) {
     standardInput = System.in
 }
 
+/** Запуск на сервере helios: ./gradlew runHeliosServer (или scripts/helios-run-server.sh). */
+tasks.register('runHeliosServer', JavaExec) {
+    group = 'helios'
+    description = 'Сервер с дефолтами helios: PG_HOST=pg, PG_DATABASE=studs, PG_USER=$USER, пароль=логин, AUTO_CREATE_DATABASE=true. Порт: -PserverPort= / SERVER_PORT / первый аргумент.'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'org.example.server.ServerMain'
+    standardInput = System.in
+    def unixUser = System.getenv('USER') ?: System.getProperty('user.name') ?: ''
+    def listenPort = (findProperty('serverPort') ?: System.getenv('SERVER_PORT') ?: '5555').toString()
+    args listenPort
+    environment 'PG_HOST', findProperty('pgHost') ?: System.getenv('PG_HOST') ?: 'pg'
+    environment 'PG_PORT', findProperty('pgPort') ?: System.getenv('PG_PORT') ?: '5432'
+    environment 'PG_DATABASE', findProperty('pgDatabase') ?: System.getenv('PG_DATABASE') ?: 'studs'
+    environment 'PG_USER', findProperty('pgUser') ?: System.getenv('PG_USER') ?: unixUser
+    environment 'PG_PASSWORD', "${findProperty('pgPassword')
+            ?: System.getenv('PG_PASSWORD')
+            ?: System.getenv('PGPASSWORD')
+            ?: (findProperty('pgUser') ?: System.getenv('PG_USER') ?: unixUser)}"
+    environment 'AUTO_CREATE_DATABASE', findProperty('autoCreateDatabase')
+            ?: System.getenv('AUTO_CREATE_DATABASE') ?: 'true'
+}
+
+/** Клиент с вашего ПК к helios: -PheliosHost=helios... или export SERVER_HOST. */
+tasks.register('runHeliosClient', JavaExec) {
+    group = 'helios'
+    description = 'Клиент к удалённому хосту (-PheliosHost= / SERVER_HOST, -PserverPort= / SERVER_PORT)'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'org.example.client.ClientMain'
+    standardInput = System.in
+    environment 'SERVER_HOST', findProperty('heliosHost') ?: System.getenv('SERVER_HOST') ?: 'localhost'
+    environment 'SERVER_PORT', findProperty('serverPort') ?: System.getenv('SERVER_PORT') ?: '5555'
+}
+

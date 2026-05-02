@@ -29,7 +29,7 @@ public class ServerConnectionAcceptor {
     }
 
     public void start() throws Exception {
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
+        try (ServerSocket serverSocket = new ServerSocket(port, 512)) {
             BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
             System.out.println("Server started on port " + port);
             System.out.println("Server console: help (данные в PostgreSQL)");
