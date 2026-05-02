@@ -109,7 +109,7 @@ public class JsonFileInputReader implements InputReader {
         }
 
         Date creationDate = new Date();
-        return new City(id, name, coordinates, creationDate, areaRaw, populationRaw, meters, climate, government, sol, governor);
+        return new City(id, name, coordinates, creationDate, areaRaw, populationRaw, meters, climate, government, sol, governor, null, null);
     }
 
     private static long parseLongField(JSONObject json, String key) {

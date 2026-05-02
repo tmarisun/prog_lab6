@@ -23,6 +23,25 @@ public class ClientCommandParser {
     }
 
     private void registerCommands() {
+        commands.put("register", (arg, req) -> {
+            if (arg == null || arg.isBlank()) {
+                throw new IllegalArgumentException("Usage: register <login> <password>");
+            }
+            String trimmed = arg.trim();
+            int sp = trimmed.indexOf(' ');
+            if (sp < 0) {
+                throw new IllegalArgumentException("Usage: register <login> <password>");
+            }
+            String login = trimmed.substring(0, sp).trim();
+            String password = trimmed.substring(sp + 1).trim();
+            if (login.isEmpty() || password.isEmpty()) {
+                throw new IllegalArgumentException("Логин и пароль не должны быть пустыми");
+            }
+            req.setType(CommandType.REGISTER);
+            req.setLogin(login);
+            req.setPassword(password);
+        });
+
         commands.put("help", new SimpleCommand(CommandType.HELP));
         commands.put("info", new SimpleCommand(CommandType.INFO));
         commands.put("show", new SimpleCommand(CommandType.SHOW));

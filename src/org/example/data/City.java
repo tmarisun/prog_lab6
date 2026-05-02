@@ -34,6 +34,10 @@ public class City implements Comparable<City>, Serializable {
     private StandardOfLiving standardOfLiving;
     private Human governor;
 
+    /** Владелец записи (создатель); заполняется на сервере при загрузке из БД. */
+    private Long ownerUserId;
+    private String ownerLogin;
+
 
     @Override
     public int compareTo(City other) {

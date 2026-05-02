@@ -15,10 +15,14 @@ public class UpdateCommand implements ServerCommandHandler {
             return CommandResponse.fail("ID and City payload are required");
         }
 
-        boolean updated = service.update(id, city);
-        if (updated) {
-            return CommandResponse.ok("Updated");
+        try {
+            boolean updated = service.update(id, city, request.getAuthenticatedUserId());
+            if (updated) {
+                return CommandResponse.ok("Updated");
+            }
+            return CommandResponse.fail("City not found or not owned by you: " + id);
+        } catch (Exception e) {
+            return CommandResponse.fail("Update error: " + e.getMessage());
         }
-        return CommandResponse.fail("City not found with ID: " + id);
     }
 }

@@ -16,10 +16,14 @@ public class InsertAtCommand implements ServerCommandHandler {
             return CommandResponse.fail("Index and City payload are required");
         }
 
-        boolean inserted = service.insertAt(index, city);
-        if (inserted) {
-            return CommandResponse.ok("Inserted");
+        try {
+            boolean inserted = service.insertAt(index, city, request.getAuthenticatedUserId(), request.getLogin());
+            if (inserted) {
+                return CommandResponse.ok("Inserted");
+            }
+            return CommandResponse.fail("Invalid index or insertion failed");
+        } catch (Exception e) {
+            return CommandResponse.fail("Insert error: " + e.getMessage());
         }
-        return CommandResponse.fail("Invalid index or insertion failed");
     }
 }

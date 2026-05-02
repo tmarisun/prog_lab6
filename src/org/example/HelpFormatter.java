@@ -14,13 +14,15 @@ public final class HelpFormatter {
 
     public static String serverHelpMessage() {
         String[][] rows = {
+                {"register login password", "create a new account (password stored as SHA-384)"},
+                {"login user password", "set credentials sent with every request (client only)"},
                 {"help", "show help for available commands"},
                 {"info", "show information about collection"},
                 {"show", "show all elements sorted by name"},
                 {"add", "add city from console or JSON file"},
                 {"update id", "update city by id"},
                 {"remove_by_id id", "remove city by id"},
-                {"clear", "clear collection"},
+                {"clear", "remove all cities you own (others remain)"},
                 {"insert_at index", "insert city at index"},
                 {"add_if_max", "add city if it is max"},
                 {"sort", "sort collection in natural order"},

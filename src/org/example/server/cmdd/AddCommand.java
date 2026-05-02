@@ -13,7 +13,7 @@ public class AddCommand implements ServerCommandHandler {
             return CommandResponse.fail("City payload is required");
         }
         try {
-            City added = service.add(city);
+            City added = service.add(city, request.getAuthenticatedUserId(), request.getLogin());
             return CommandResponse.ok("Added city with id " + added.getId());
         } catch (Exception e) {
             return CommandResponse.fail("Failed to add city: " + e.getMessage());

@@ -3,6 +3,7 @@ package org.example.net.protocol;
 import java.io.Serializable;
 
 public enum CommandType implements Serializable {
+    REGISTER,
     HELP,
     INFO,
     SHOW,

@@ -13,10 +13,14 @@ public class AddIfMaxCommand implements ServerCommandHandler {
             return CommandResponse.fail("City payload is required");
         }
 
-        boolean added = service.addIfMax(city);
-        if (added) {
-            return CommandResponse.ok("Added (value is max)");
+        try {
+            boolean added = service.addIfMax(city, request.getAuthenticatedUserId(), request.getLogin());
+            if (added) {
+                return CommandResponse.ok("Added (value is max)");
+            }
+            return CommandResponse.fail("Not added: value is not greater than max");
+        } catch (Exception e) {
+            return CommandResponse.fail("Failed: " + e.getMessage());
         }
-        return CommandResponse.fail("Not added: value is not greater than max");
     }
 }

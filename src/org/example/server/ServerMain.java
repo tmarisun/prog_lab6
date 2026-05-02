@@ -1,21 +1,33 @@
 package org.example.server;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import org.example.db.CityRepository;
+import org.example.db.Database;
+import org.example.db.SchemaInitializer;
+import org.example.db.UserRepository;
+
+import java.sql.Connection;
 
 public class ServerMain {
+
     public static void main(String[] args) throws Exception {
-        if (args.length < 1) {
-            System.out.println("Usage: ServerMain <collection-file> [port]");
-            return;
+        Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
+
+        int port = args.length >= 1
+                ? Integer.parseInt(args[0])
+                : Integer.parseInt(dotenv.get("SERVER_PORT", "5555"));
+
+        Database database = new Database(dotenv);
+        try (Connection c = database.getConnection()) {
+            new SchemaInitializer().ensureSchema(c);
         }
-        Dotenv dotenv = Dotenv.configure().load();
-        int port = Integer.parseInt(dotenv.get("SERVER_PORT", "5555"));
-        String file = args.length > 0 ? args[0] : dotenv.get("COLLECTION_FILE", "cities.json");
 
+        UserRepository userRepository = new UserRepository(database);
+        CityRepository cityRepository = new CityRepository(database);
+        ServerCollectionService service = new ServerCollectionService(cityRepository);
+        service.loadFromDatabase();
 
-        ServerCollectionService service = new ServerCollectionService(file);
-        ServerCommandProcessor processor = new ServerCommandProcessor(service);
+        ServerCommandProcessor processor = new ServerCommandProcessor(service, userRepository);
         new ServerConnectionAcceptor(port, processor).start();
     }
 }
-

@@ -12,6 +12,10 @@ public class CommandResponse implements Serializable {
     private boolean success;
     @Getter
     private String message;
+
+    public boolean isSuccess() {
+        return success;
+    }
     @Getter
     @Setter
     private List<City> cities = new ArrayList<>();

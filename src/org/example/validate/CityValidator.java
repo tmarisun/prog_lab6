@@ -24,4 +24,25 @@ public class CityValidator {
         CoordinatesValidator.validateCoordinates(city.getCoordinates());
     }
 
+    public static void validateCityForInsert(City city) throws IllegalArgumentException {
+        InputValidator.validateName(city.getName());
+        InputValidator.validateArea(city.getArea());
+        InputValidator.validatePopulation(city.getPopulation());
+        InputValidator.validateNotNull(city.getCoordinates(), "Coordinates");
+        InputValidator.validateNotNull(city.getCreationDate(), "Creation date");
+        InputValidator.validateNotNull(city.getGovernment(), "Government");
+        InputValidator.validateNotNull(city.getClimate(), "Climate");
+        CoordinatesValidator.validateCoordinates(city.getCoordinates());
+    }
+
+    public static void validateCityForUpdate(City city) throws IllegalArgumentException {
+        InputValidator.validateName(city.getName());
+        InputValidator.validateArea(city.getArea());
+        InputValidator.validatePopulation(city.getPopulation());
+        InputValidator.validateNotNull(city.getCoordinates(), "Coordinates");
+        InputValidator.validateNotNull(city.getGovernment(), "Government");
+        InputValidator.validateNotNull(city.getClimate(), "Climate");
+        CoordinatesValidator.validateCoordinates(city.getCoordinates());
+    }
+
 }

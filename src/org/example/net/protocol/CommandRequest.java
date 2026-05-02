@@ -12,5 +12,13 @@ public class CommandRequest implements Serializable {
     private Integer index;
     private City city;
 
+    /** Логин пользователя (передаётся с каждым запросом). */
+    private String login;
+    /** Пароль в открытом виде по сети (как требует задание). */
+    private String password;
+
+    /** Устанавливается на сервере после успешной аутентификации; не сериализуется клиенту обратно как часть ответа. */
+    private transient Long authenticatedUserId;
+
 }
 
